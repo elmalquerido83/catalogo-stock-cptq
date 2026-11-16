@@ -51,11 +51,32 @@
       descripcion: x.descripcion || '',
       etiquetasTxt: (x.etiquetas || []).join(' '),
       extra: [x.tipo === 'video' ? 'video clip' : 'foto fotografia imagen', x.toma, x.momento,
-        x.personas ? 'personas gente' : '', esVertical(x) ? 'vertical' : 'horizontal'].join(' '),
+        x.personas ? 'personas gente' : '', esVertical(x) ? 'vertical' : 'horizontal',
+        sinonimosDe([x.nombre, palabrasDeNombre(x.nombre), x.carpeta, x.lugar, x.descripcion, (x.etiquetas || []).join(' ')].join(' '))].join(' '),
     })));
   }
 
   const esVertical = (x) => x.alto > x.ancho;
+
+  // Grupos de sinónimos: si una pieza menciona cualquiera de las palabras de un grupo,
+  // también se encuentra buscando las demás (p. ej. Chacchoben → "sitio arqueológico").
+  const SINONIMOS = [
+    ['sitio arqueologico', 'zona arqueologica', 'arqueologia', 'arqueologico', 'arqueologica', 'ruinas', 'ruina', 'piramide', 'templo maya', 'maya', 'mayas', 'vestigios'],
+    ['hotel', 'resort', 'hospedaje', 'alojamiento'],
+    ['alberca', 'piscina'],
+    ['restaurante', 'gastronomia', 'comida', 'platillo', 'cocina'],
+    ['dron', 'drone', 'aerea', 'aereo', 'vista aerea'],
+    ['atardecer', 'puesta de sol', 'ocaso'],
+    ['fauna', 'animal', 'animales', 'aves', 'flamencos', 'tortuga', 'pez', 'peces', 'tiburon ballena'],
+    ['submarino', 'submarina', 'buceo', 'snorkel'],
+  ].map((g) => g.map(sinAcentos));
+
+  function sinonimosDe(texto) {
+    const t = ' ' + sinAcentos(texto).replace(/[^a-z0-9ñ]+/g, ' ') + ' ';
+    const extra = [];
+    SINONIMOS.forEach((g) => { if (g.some((w) => t.includes(' ' + w + ' '))) extra.push(...g); });
+    return extra.join(' ');
+  }
 
   function pasaFiltros(x) {
     if (estado.tipo && x.tipo !== estado.tipo) return false;
