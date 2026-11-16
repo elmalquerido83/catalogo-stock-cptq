@@ -1,0 +1,1 @@
+# catalogo-stock-cptq
