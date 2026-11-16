@@ -1,0 +1,5 @@
+dropbox==12.2.5
+anthropic==2.8.0
+pillow==13.0.0
+pillow-heif
+requests

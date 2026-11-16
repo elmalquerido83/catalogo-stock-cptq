@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo de contenidos</title>
+  <meta name="description" content="Buscador de fotos y vídeos del stock de destinos 2026">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230e7c86'/><circle cx='14' cy='14' r='7' fill='none' stroke='white' stroke-width='3'/><path d='M19 19l6 6' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="marca">
+      <h1>Catálogo de contenidos</h1>
+      <p class="sub">Stock de destinos 2026 · <span id="total">cargando…</span></p>
+    </div>
+    <form class="buscador" id="form" role="search" onsubmit="return false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Busca: cenote, dron atardecer, Holbox flamencos, alberca hotel…" aria-label="Buscar">
+    </form>
+    <div class="filtros" id="filtros">
+      <div class="segmentado" role="group" aria-label="Tipo">
+        <button type="button" data-tipo="" class="activo">Todo</button>
+        <button type="button" data-tipo="video">Vídeos</button>
+        <button type="button" data-tipo="foto">Fotos</button>
+      </div>
+      <select id="f-destino" aria-label="Destino"><option value="">Todos los destinos</option></select>
+      <select id="f-formato" aria-label="Formato">
+        <option value="">Horizontal y vertical</option>
+        <option value="h">Horizontal</option>
+        <option value="v">Vertical</option>
+      </select>
+      <select id="f-toma" aria-label="Tipo de toma">
+        <option value="">Cualquier toma</option>
+        <option value="dron/aérea">Dron / aérea</option>
+        <option value="terrestre">Terrestre</option>
+        <option value="submarina">Submarina</option>
+      </select>
+      <select id="f-momento" aria-label="Momento">
+        <option value="">Cualquier momento</option>
+        <option value="día">Día</option>
+        <option value="atardecer">Atardecer</option>
+        <option value="noche">Noche</option>
+        <option value="interior">Interior</option>
+      </select>
+      <select id="f-orden" aria-label="Orden">
+        <option value="rel">Más relevantes</option>
+        <option value="reciente">Más recientes</option>
+        <option value="nombre">Por nombre</option>
+      </select>
+      <button type="button" id="limpiar" class="enlace">Limpiar</button>
+    </div>
+  </header>
+
+  <main>
+    <p id="estado" class="estado" aria-live="polite"></p>
+    <div id="rejilla" class="rejilla"></div>
+    <div id="centinela" class="centinela"></div>
+  </main>
+
+  <dialog id="detalle" class="detalle" aria-labelledby="d-nombre">
+    <button class="cerrar" id="cerrar" aria-label="Cerrar">×</button>
+    <div class="d-media"><img id="d-img" alt=""></div>
+    <div class="d-info">
+      <h2 id="d-nombre"></h2>
+      <p id="d-lugar" class="d-lugar"></p>
+      <p id="d-desc"></p>
+      <ul id="d-tags" class="tags"></ul>
+      <dl id="d-datos" class="datos"></dl>
+      <p id="d-ruta" class="ruta"></p>
+      <div class="acciones">
+        <a id="d-ver" class="boton" target="_blank" rel="noopener">Ver en Dropbox</a>
+        <a id="d-bajar" class="boton primario" target="_blank" rel="noopener">Descargar</a>
+        <button id="d-copiar" class="boton" type="button">Copiar enlace</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="lib/minisearch.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Conectar Dropbox</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    main { max-width: 680px; }
+    .paso { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 16px; margin-bottom: 14px; display: grid; gap: 10px; }
+    .paso h2 { margin: 0; font-size: 16px; }
+    .paso p { margin: 0; color: var(--suave); }
+    .paso input { border: 1px solid var(--borde); border-radius: 8px; padding: 10px; background: var(--fondo); width: 100%; }
+    .resultado { font-family: ui-monospace, monospace; word-break: break-all; background: var(--chip); padding: 10px; border-radius: 8px; }
+    .error { color: #c0392b; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Conectar Dropbox al catálogo</h1>
+    <p class="estado">Esta página no guarda nada: solo te ayuda a obtener el código que luego pegas como secreto en GitHub.</p>
+
+    <section class="paso">
+      <h2>1. Clave de la app (App key)</h2>
+      <p>Cópiala de la pestaña <b>Settings</b> de tu app en dropbox.com/developers.</p>
+      <input id="clave" autocomplete="off" spellcheck="false" placeholder="p. ej. a1b2c3d4e5f6g7h">
+      <button class="boton primario" id="autorizar" type="button">Autorizar en Dropbox</button>
+    </section>
+
+    <section class="paso">
+      <h2>2. Código de autorización</h2>
+      <p>Dropbox te mostrará un código después de pulsar «Permitir». Pégalo aquí.</p>
+      <input id="codigo" autocomplete="off" spellcheck="false" placeholder="Pega aquí el código">
+      <button class="boton primario" id="obtener" type="button">Obtener token</button>
+    </section>
+
+    <section class="paso" id="final" hidden>
+      <h2>3. Tu token de actualización</h2>
+      <p>Guárdalo en GitHub como secreto con el nombre <b>DROPBOX_REFRESH_TOKEN</b>. No lo compartas.</p>
+      <div class="resultado" id="token"></div>
+      <button class="boton" id="copiar" type="button">Copiar</button>
+    </section>
+    <p id="msg" class="error" aria-live="polite"></p>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    let verificador = null;
+
+    $('autorizar').onclick = async () => {
+      const clave = $('clave').value.trim();
+      if (!clave) { $('msg').textContent = 'Primero pega la App key.'; return; }
+      $('msg').textContent = '';
+      verificador = b64url(crypto.getRandomValues(new Uint8Array(48)));
+      const reto = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verificador)));
+      const u = new URL('https://www.dropbox.com/oauth2/authorize');
+      u.search = new URLSearchParams({
+        client_id: clave, response_type: 'code', token_access_type: 'offline',
+        code_challenge: reto, code_challenge_method: 'S256',
+      });
+      window.open(u, '_blank', 'noopener');
+    };
+
+    $('obtener').onclick = async () => {
+      $('msg').textContent = '';
+      if (!verificador) { $('msg').textContent = 'Primero pulsa «Autorizar en Dropbox» (en esta misma pestaña, sin recargarla).'; return; }
+      try {
+        const r = await fetch('https://api.dropboxapi.com/oauth2/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            code: $('codigo').value.trim(), grant_type: 'authorization_code',
+            code_verifier: verificador, client_id: $('clave').value.trim(),
+          }),
+        });
+        const d = await r.json();
+        if (!r.ok || !d.refresh_token) throw new Error(d.error_description || d.error || r.status);
+        $('token').textContent = d.refresh_token;
+        $('final').hidden = false;
+      } catch (e) {
+        $('msg').textContent = 'No funcionó: ' + e.message + '. Vuelve a empezar desde el paso 1 (el código solo sirve una vez).';
+      }
+    };
+
+    $('copiar').onclick = async () => {
+      await navigator.clipboard.writeText($('token').textContent);
+      $('copiar').textContent = '¡Copiado!';
+    };
+  </script>
+</body>
+</html>
