@@ -1,1 +1,14 @@
-{}
+{
+ "id:ftzWmdbzPcoAAAAAAAGJ0w": {
+  "ruta": "/CPTQ/DESTINOS/2026 Stock Destinos Enlinea Media/Levantamientos enlinea Media/02. Destinos (RAW)/Isla Mujeres/08. Agosto/Videos RAW/IslaM_CalleHidalgo14.MP4",
+  "rev": "0165e71faf9efc700000001433d1fb0",
+  "error": "Command '['ffmpeg', '-v', 'error', '-y', '-ss', '4.16', '-i', 'https://ucc0e82d939dfe02e99acc007afc.dl.dropboxusercontent.com/cd/0/get/DMGExJr4sxbSWUs14uPlbj2ia9ooUb5C3WlDV5wwK2VNPtNFLnuEYNmgbR73pwfZOc4ltP_3mS3xQ0n2SLQc7jsNUAnGnF4PIj8NjOKqb_sneD9_YeuyyJ4gygJJebfGUVtmhtUqM9tPEPqAlXrbZ5nea5jZl52xM-OEZ",
+  "intentos": 1
+ },
+ "id:ftzWmdbzPcoAAAAAAAF8eQ": {
+  "ruta": "/CPTQ/DESTINOS/2026 Stock Destinos Enlinea Media/Levantamientos enlinea Media/02. Destinos (RAW)/Cancún/06. Junio/Fotos RAW/CM_IglesiaEstrellaDeMar4.JPG",
+  "rev": "0165e71f858a8f900000001433d1fb0",
+  "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+  "intentos": 1
+ }
+}
